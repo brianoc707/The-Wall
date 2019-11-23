@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .comment{
+            margin-left: 20px;
+            background-color: grey;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Coding Dojo Wall</h1>
+        <a href="/logout">Logout</a>
+        <h1>Welcome {{currentUser.first_name}}</h1>
+    </div>
+    <div class="container">
+        <div class="post">
+            <form action="/message" method="post">
+                {% csrf_token %}
+                <p>Post A Message</p>
+                <textarea name="message" id="" cols="30" rows="10"></textarea>
+
+                <input type="submit" value="Post a message">
+            </form>
+        </div>
+        {% for message in messages %}
+        <p>{{message.poster.first_name}} {{message.poster.last_name}} - {{message.created_at}}
+            {{message.message}} {% if message.poster == currentUser %}<a href="/delete/{{message.id}}">Delete</a>{% endif %}
+            
+            {% for message in message.messages.all %}
+            <div class="comment">
+                <p>{{message.commenter.first_name}} {{message.commenter.last_name}} - {{message.created_at}}
+                    {{message.comment}}</p>
+            </div>
+            {% endfor %}
+        
+        <form action="/comment/{{message.id}}" method="post">
+            {% csrf_token %}
+            <p>Post A Comment</p>
+            <input type="text" name = "comment">
+            <input type="submit" value="Post a comment">
+        </form>
+            
+        {% endfor %}
+        
+    </div>
+    
+</body>
+</html>
